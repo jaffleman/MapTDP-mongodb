@@ -5,26 +5,26 @@ const bodyParser = require('body-parser')
 //const usersRoutes = require('./routes/usersRoutes')
 //const path = require('path');
 const tdpRoutes = require('./routes/tdpRoutes')
+const loger = require("./logtimer/writeLog.js")
+
 
 app = express()
 
 mongoose.connect("mongodb+srv://Jaffleman:SuperMapTDP923@clustermapt.3dujj.mongodb.net/MapTDP?retryWrites=true&w=majority",
   { useNewUrlParser: true,
     useUnifiedTopology: true })
-  .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion à MongoDB échouée !'));
+  .then(() => loger('Connexion à MongoDB réussie !'))
+  .catch(() => loger('Connexion à MongoDB échouée !'));
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use((req, res, next) => {
-  console.log(`=> new incoming "${req.method}" request`)
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  //loger(`new incoming "${req.method}" request`)
+  res.setHeader('Access-Control-Allow-Origin', 'http://www.jaffleman.tech');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   next();
 });
-//app.use('/images', express.static(path.join(__dirname, 'images')));
-//app.use('/api/stuff', productRoutes)
-//app.use('/api/auth', usersRoutes)
+
 app.use('/tdp', tdpRoutes)
 module.exports = app

@@ -1,12 +1,18 @@
 const tdp = require('../model/tdp')
-
+const loger = require("../logtimer/writeLog.js")
 
 exports.search = (req, res)=>{
+    loger(' <'+req.body[0].rep+'> : '+' New Search of '+req.body.length+' TDP')
     console.log(req.body);
-    if (req.body.length < 0) {
+    if (req.body.length < 1) {
         res.status(200).end('pas de tdp dans la demande')
     }
-    const elements = req.body.map(tdp=>{return {$and:[tdp]}})
+    //const tabPlot =[]
+    const tabTdp = req.body.map(element=>{
+        //tabPlot.push(element.plot)
+        return {"rep":element.rep, "cd":element.cd, "regletteType":element.regletteType, "regletteNbr":element.regletteNbr}
+    })
+    const elements = tabTdp.map(tdp=>{return {$and:[tdp]}})
     const expression = {
         $or: [...elements]
     }
@@ -16,101 +22,87 @@ exports.search = (req, res)=>{
         }
         res.status(200).json(arr)});
 }
-
+exports.searchRep = (req, res)=>{
+    loger(' <'+req.body[0].rep+'> : '+' New RepSearch')
+    console.log(req.body)
+    if (req.body.length < 1) res.status(200).end('pas de tdp dans la demande')
+    const tabTdp = req.body.map(element=>{return {"rep":element.rep}})
+    const elements = tabTdp.map(tdp=>{return {$and:[tdp]}})
+    const expression = {
+        $or: [...elements]
+    }
+    tdp.find( expression, function(err, arr) {
+        if (err) res.status(500).end('internal server error')
+        else res.status(200).json(arr)
+    });
+}
 
 
 exports.create = (req, res)=>{
+    loger(' <'+req.body[0].rep+'> : '+' New Creation of '+req.body.length+' tdp')
+    const count = req.body.length
     const total = [...req.body]
+    console.table(total)
     const results = []
 
     const saveAll = ()=>{
-        const doc = total.pop()
+        const doc = total.shift()
         tdp.find(doc)
         .then(result=>{
             if (result.length===0) {
-                console.log('A')
                 tdp.create (doc)
                 .then(result=>{
-                    results.push(result)
-                    if (results.length<req.body.length) {
-                        console.log('B');
-                        saveAll()
-                    }else{
-                        console.log('C')
-                        console.table(results)
-                        res.status(200).json(results)
-                    } 
+                    results.push({"status":true ,'id':result._id})
+                    if (results.length<count) saveAll()
+                    else res.status(200).json(results)
                 })
                 .catch(err=>console.log(err))
             }else{
-                console.log('D')
-                results.push('doc existe deja')
-                if (results.length<req.body.length) {
-                    console.log('E')
-                    saveAll()
-                }else{
-                    console.log('F')
-                    console.table(results)
-                    res.status(200).json(results)
-                }
+                results.push({"status":false ,'id':result._id})
+                if (results.length<count) saveAll()
+                else res.status(200).json(results)
             }
         })  
     }
     saveAll()
 }
 exports.update = (req, res)=>{
+    loger(' <'+req.body[0].rep+'> : '+' New Update of '+req.body.length+' tdp')
     const total = [...req.body]
+    console.table(total)
     const results = []
 
     const updateAll = ()=>{
         const doc = total.pop()
-        console.log(doc)
         tdp.updateOne(
             {  "_id": doc._id },
             { $set: { ...doc}}
         )
         .then(result=>{
             results.push(result)
-            if (results.length<req.body.length) {
-                console.log('B');
-                updateAll()
-            }else{
-                console.log('C')
-                console.table(results)
-                res.status(200).json(results)
-            } 
+            if (results.length<req.body.length) updateAll()
+            else res.status(200).json(results)
         }).catch(err=>console.log(err))                
     }
-    if (total.length) {
-        updateAll() 
-    }else{
-        res.status(400).end('nothing to update!')
-    }
+    if (total.length) updateAll() 
+    else res.status(200).json({status:'nothing to update'})
 }
 
 exports.delete = (req, res)=>{
+    loger(' <'+req.body[0].rep+'> : '+' New Delete of '+req.body.length+' tdp')
     const total = [...req.body]
+    console.table(total)
     const results = []
 
     const deleteAll = ()=>{
         const doc = total.pop()
-        console.log(doc)
         tdp.deleteOne({"_id": doc._id})
         .then(result=>{
             results.push(result)
-            if (results.length<req.body.length) {
-                console.log('B');
-                deleteAll()
-            }else{
-                console.log('C')
-                console.table(results)
-                res.status(200).json(results)
-            } 
+            if (results.length<req.body.length) deleteAll()
+            else res.status(200).json(results)
         }).catch(err=>console.log(err))                
     }
-    if (total.length) {
-        deleteAll() 
-    }else{
-        res.status(400).end('nothing to delete!')
-    }
+    if (total.length) deleteAll() 
+    else res.status(200).json({status:'nothing to delete'})
 }

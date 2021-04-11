@@ -8,7 +8,7 @@ const tdpSchema = mongoose.Schema({
     salle: { type: Number, require: true},
     rco: { type: Number, require: true},
     ferme: { type: Number, require: true},
-    niveau: { type: Number, require: true},
+    level: { type: Number, require: true},
     option: { type: String}
 });
 

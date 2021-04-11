@@ -1,6 +1,7 @@
-const { log } = require('console');
+
 const http = require('http');
 const app = require('./app');
+const loger = require("./logtimer/writeLog.js")
 
 const normalizePort = val => {
   const port = parseInt(val, 10);
@@ -43,7 +44,7 @@ server.on('listening', () => {
   const address = server.address();
   console.table(address);
   const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port;
-  console.log('Listening on ' + bind);
+  loger(' DEMARRAGE DU SERVEUR => '+ bind);
 });
 
 server.listen(port);
