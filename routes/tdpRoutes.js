@@ -7,4 +7,5 @@ routes.post('/searchRep', tdp.searchRep)
 routes.post('/create', tdp.create)
 routes.put('/update', tdp.update)
 routes.delete('/delete', tdp.delete)
+routes.get('/updateid', tdp.updateid)
 module.exports = routes;

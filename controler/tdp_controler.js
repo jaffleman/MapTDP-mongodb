@@ -20,7 +20,8 @@ exports.search = (req, res)=>{
         if (err) {
             res.status(500).end(err)
         }
-        res.status(200).json(arr)});
+        res.status(200).json(arr)
+    });
 }
 exports.searchRep = (req, res)=>{
     loger(' <'+req.body[0].rep+'> : '+' New RepSearch')
@@ -50,7 +51,7 @@ exports.create = (req, res)=>{
         tdp.find(doc)
         .then(result=>{
             if (result.length===0) {
-                tdp.create (doc)
+                tdp.create(doc)
                 .then(result=>{
                     results.push({"status":true ,'id':result._id})
                     if (results.length<count) saveAll()
@@ -86,6 +87,37 @@ exports.update = (req, res)=>{
     }
     if (total.length) updateAll() 
     else res.status(200).json({status:'nothing to update'})
+}
+exports.updateid = (req, res)=>{
+    tdp.find( {}, function(err, arr) {
+        if (err) {
+            res.status(500).end(err)
+        }
+        else{
+            const total = [...arr]
+            total.forEach((tdp)=>{
+                const {rep, regletteType, regletteNbr} = tdp
+                const newValue = rep+regletteType+regletteNbr
+                tdp.tdpId = newValue
+            })
+            //console.table(total)
+            const results = []
+            const updateAll = (total)=>{
+                const doc = total.pop()
+                tdp.updateOne(
+                    {  "_id": doc._id },
+                    { $set: { ...doc}}
+                )
+                .then(result=>{
+                    results.push(result)
+                    if (results.length<arr.length) updateAll()
+                    else res.status(200).json(results)
+                }).catch(err=>console.log(err))                
+            }
+            if (total.length) updateAll(total) 
+            else res.status(200).json({status:'nothing to update'})
+        }
+    });
 }
 
 exports.delete = (req, res)=>{

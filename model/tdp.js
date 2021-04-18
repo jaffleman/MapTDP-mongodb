@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const tdpSchema = mongoose.Schema({
+    tdpId: {type: String, required: true},
     regletteType: { type: String, required: true},
     regletteNbr: { type: String, required: true},
     cd: { type: Number, required: true},
