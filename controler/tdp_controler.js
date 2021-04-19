@@ -3,14 +3,14 @@ const loger = require("../logtimer/writeLog.js")
 
 exports.search = (req, res)=>{
     loger(' <'+req.body[0].rep+'> : '+' New Search of '+req.body.length+' TDP')
-    console.log(req.body);
     if (req.body.length < 1) {
         res.status(200).end('pas de tdp dans la demande')
     }
     //const tabPlot =[]
     const tabTdp = req.body.map(element=>{
         //tabPlot.push(element.plot)
-        return {"rep":element.rep, "cd":element.cd, "regletteType":element.regletteType, "regletteNbr":element.regletteNbr}
+        const code = ""+element.rep+element.regletteType+element.regletteNbr
+        return {"tdpId":code}
     })
     const elements = tabTdp.map(tdp=>{return {$and:[tdp]}})
     const expression = {
