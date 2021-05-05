@@ -7,7 +7,7 @@ module.exports = {
   
     deploy : {
       production : {
-        user : 'freebox',
+        user : 'jaffleman',
         host : '192.168.0.29',
         ref  : 'origin/main',
         repo : 'https://github.com/jaffleman/MapTDP-mongodb.git',
