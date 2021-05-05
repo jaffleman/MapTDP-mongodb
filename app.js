@@ -19,7 +19,6 @@ mongoose.connect("mongodb+srv://Jaffleman:SuperMapTDP923@clustermapt.3dujj.mongo
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use((req, res, next) => {
-  console.log(req)
   //loger(`new incoming "${req.method}" request`)
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
