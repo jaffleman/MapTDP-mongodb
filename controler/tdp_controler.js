@@ -10,7 +10,7 @@ exports.search = (req, res)=>{
     const tabTdp = req.body.map(element=>{
         //tabPlot.push(element.plot)
         //const code = ""+element.rep+element.regletteType+element.regletteNbr
-        return {"tdpId":element.tdpId}
+        return {"tdpId":element.idTdp}
     })
     const elements = tabTdp.map(tdp=>{return {$and:[tdp]}})
     const expression = {
