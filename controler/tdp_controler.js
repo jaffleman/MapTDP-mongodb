@@ -9,8 +9,31 @@ exports.search = (req, res)=>{
     //const tabPlot =[]
     const tabTdp = req.body.map(element=>{
         //tabPlot.push(element.plot)
-        const code = ""+element.rep+element.regletteType+element.regletteNbr
-        return {"tdpId":code}
+        //const code = ""+element.rep+element.regletteType+element.regletteNbr
+        return {"tdpId":element.tdpId}
+    })
+    const elements = tabTdp.map(tdp=>{return {$and:[tdp]}})
+    const expression = {
+        $or: [...elements]
+    }
+    tdp.find( expression, function(err, arr) {
+        if (err) {
+            res.status(500).end(err)
+        }
+        res.status(200).json(arr)
+    });
+}
+exports.searchByPosition = (req, res)=>{
+    loger(' <'+req.body[0].rep+'> : '+' New Search of '+req.body.length+' TDP by Position')
+    if (req.body.length < 1)  return res.status(200).end('pas de tdp dans la demande')
+    const tabTdp = req.body.map(({rep,salle,rco,ferme,level})=>{
+        return {
+            "rep":rep,
+            "ferme":ferme,
+            "level":level,
+            "rco":rco,
+            "salle":salle
+        }
     })
     const elements = tabTdp.map(tdp=>{return {$and:[tdp]}})
     const expression = {
