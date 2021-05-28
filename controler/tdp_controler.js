@@ -6,11 +6,8 @@ exports.search = (req, res)=>{
     if (req.body.length < 1) {
         res.status(200).end('pas de tdp dans la demande')
     }
-    //const tabPlot =[]
     const tabTdp = req.body.map(element=>{
-        //tabPlot.push(element.plot)
-        //const code = ""+element.rep+element.regletteType+element.regletteNbr
-        return {"tdpId":element.idTdp}
+        return {"tdpId":element.tdpId}
     })
     const elements = tabTdp.map(tdp=>{return {$and:[tdp]}})
     const expression = {
